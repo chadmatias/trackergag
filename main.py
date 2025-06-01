@@ -21,7 +21,7 @@ async def fetch_stock_data():
 
     stock_headers = [
         "Gear Stock", "Egg Stock", "Seeds Stock",
-        "Night Stock", "Blood Stock", "Cosmetics Stock"
+        "Honey Stock", "Cosmetics Stock"  # Updated headers
     ]
 
     embed = discord.Embed(
@@ -89,10 +89,6 @@ async def update_stock_message(channel):
             next_update = (now.minute // 5 + 1) * 5
             wait_time = ((next_update - now.minute) * 60) - now.second + 30
 
-            # If wait_time is negative due to minute overflow, adjust for the next hour
-            if wait_time < 0:
-                wait_time += 3600
-
             await asyncio.sleep(wait_time)
 
         except Exception as e:
@@ -102,7 +98,6 @@ async def update_stock_message(channel):
                 color=discord.Color.red()
             )
             await stock_message.edit(embed=error_embed)
-            await asyncio.sleep(60)  # wait a bit before retrying to avoid rapid failure loops
 
 @client.event
 async def on_ready():
@@ -111,7 +106,5 @@ async def on_ready():
 
     if channel:
         client.loop.create_task(update_stock_message(channel))
-    else:
-        print(f"Channel ID {CHANNEL_ID} not found or bot doesn't have access.")
 
 client.run(TOKEN)
